@@ -18,6 +18,7 @@ import java.util.Optional;
 public class AluguelService {
 
     public Page<Aluguel> findAll(Pageable pageable) {
+
         return aluguelRepository.findAll(pageable);
     }
 

@@ -8,6 +8,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -18,9 +19,25 @@ public class ClienteService {
     @Autowired
     private ClienteRepository clienteRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Transactional
     public Cliente salvar(Cliente clientes) {
         return clienteRepository.save(clientes);
+    }
+
+    @Transactional
+    public Cliente esqueciMinhaSenha(Long idCliente, String senhaAtual, String novaSenha, String confirmarSenha){
+        if(!novaSenha.equals(confirmarSenha)){
+            System.out.println("A senhas não são iguais");
+        }
+        Cliente cliente = buscarPorId(idCliente);
+        if(!passwordEncoder.matches(senhaAtual, cliente.getSenhaCliente())){
+            System.out.println("Sua senha não confere");
+        }
+        cliente.setSenhaCliente(passwordEncoder.encode(novaSenha));
+        return cliente;
     }
 
     @Transactional
@@ -45,12 +62,15 @@ public class ClienteService {
         return ResponseEntity.ok(clienteRepository.save(cliente));
     }
 
-    public Cliente buscarPorCliente(String nomeCliente) {
-        return clienteRepository.findByCliente(nomeCliente).orElseThrow(
-                () -> new EntityNotFoundException(String.format("Cliente %s não encontrado", nomeCliente)));
+    public Cliente buscarPorId(Long idCliente) {
+        return clienteRepository.getClienteByIdCliente(idCliente);
+    }
+    public Cliente buscarPorCliente(String emailCliente) {
+        return clienteRepository.findByemailCliente(emailCliente).orElseThrow(
+                () -> new EntityNotFoundException(String.format("Cliente %s não encontrado", emailCliente)));
     }
 
-    public Cliente.Role buscarRolePorCliente(String nomeCliente) {
-        return clienteRepository.findByRoleCliente(nomeCliente);
+    public Cliente.Role buscarRolePorCliente(String emailCliente) {
+        return clienteRepository.findByRoleCliente(emailCliente);
     }
 }

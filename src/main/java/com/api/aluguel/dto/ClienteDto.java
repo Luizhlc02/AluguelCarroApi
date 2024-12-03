@@ -21,4 +21,10 @@ public class ClienteDto {
 
     @JsonProperty("telefoneCliente")
     private String telefoneCliente;
+
+    @JsonProperty("senhaCliente")
+    private String senhaCliente;
+
+    @JsonProperty("role")
+    private String role;
 }

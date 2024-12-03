@@ -30,8 +30,9 @@ public class Cliente {
 
     @Column(name = "senhaCliente")
     private String senhaCliente;
+
     @Column(name = "role")
-    private Role role;
+    private Role role = Role.ROLE_CLIENTE;
 
     public enum Role{
         ROlE_ADMIN, ROLE_CLIENTE

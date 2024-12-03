@@ -7,6 +7,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.time.LocalDateTime;
@@ -16,19 +17,21 @@ import java.util.Date;
 @Slf4j
 public class JwtUtils {
 
-    private static final String JWT_BEARER = "Bearer ";
-    private static final String JWT_AUTHORIZATION = "Authorization";
-    private static final String SECRET_KEY = "0123456789-012345679-0123456789";
-    private static final long EXPIRE_DAYS = 0;
-    private static final long EXPIRE_HOURS = 0;
-    private static final long EXPIRE_MINUTES = 2;
+    public static final String JWT_BEARER = "Bearer ";
+    public static final String JWT_AUTHORIZATION = "Authorization";
+    public static final String SECRET_KEY = "0123456789-0123456789-0123456789";
+    public static final long EXPIRE_DAYS = 0;
+    public static final long EXPIRE_HOURS = 0;
+    public static final long EXPIRE_MINUTES = 2;
 
     private JwtUtils(){
     }
 
-    private static Key generateKey(){
+    private static SecretKey generateKey(){
         return Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
+
     }
+
     private static Date toExpireData(Date start){
         LocalDateTime dateTime = start.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
         LocalDateTime end = dateTime.plusDays(EXPIRE_DAYS).plusHours(EXPIRE_HOURS).plusHours(EXPIRE_MINUTES);
@@ -41,12 +44,13 @@ public class JwtUtils {
         Date limite = toExpireData(issuedAt);
 
         String token = Jwts.builder()
-                .setHeaderParam("typ","JWT")
-                .setSubject(emailCliente)
-                .setIssuedAt(issuedAt)
-                .setExpiration(limite)
+                .header().add("typ","JWT")
+                .and()
+                .subject(emailCliente)
+                .issuedAt(issuedAt)
+                .expiration(limite)
                 //assinatura do token recebe a key e a criptografia
-                .signWith(generateKey(), SignatureAlgorithm.ES256)
+                .signWith(generateKey())
                 .claim("role",role)
                 .compact();
         return new JwtToken(token);
@@ -55,8 +59,8 @@ public class JwtUtils {
     private static Claims getClaimsFromToken(String token){
         try {
             return Jwts.parser()
-                    .setSigningKey(generateKey()).build()
-                    .parseClaimsJws(refactorToken(token)).getBody();
+                    .verifyWith(generateKey()).build()
+                    .parseSignedClaims(refactorToken(token)).getPayload();
         }
         catch (JwtException exception){
             log.error(String.format("Token invalido %s", exception.getMessage()));
@@ -64,12 +68,16 @@ public class JwtUtils {
         return null;
     }
 
+    public static String getEmailFromToken(String token){
+        return getClaimsFromToken(token).getSubject();
+    }
+
     public static boolean tokenValido(String token){
 
         try {
             Jwts.parser()
-                    .setSigningKey(generateKey()).build()
-                    .parseClaimsJws(refactorToken(token));
+                    .verifyWith(generateKey()).build()
+                    .parseSignedClaims(refactorToken(token));
             return true;
         }
         catch (JwtException exception){

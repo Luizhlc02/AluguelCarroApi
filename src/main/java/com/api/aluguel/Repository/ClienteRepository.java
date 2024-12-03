@@ -12,7 +12,7 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long> {
 
     Cliente getClienteByIdCliente(Long idCliente);
 
-    Optional<Cliente> findByCliente(String emailCliente);
+    Optional<Cliente> findByemailCliente(String emailCliente);
 
     @Query("Select c.role from Cliente c where c.emailCliente like :emailCliente")
     Cliente.Role findByRoleCliente(String emailCliente);

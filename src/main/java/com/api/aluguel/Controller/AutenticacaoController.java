@@ -24,9 +24,22 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping
 public class AutenticacaoController {
 
+    public class ErrorMessage {
+        private HttpServletRequest path;
+        private HttpStatus status;
+        private String error;
+
+        public ErrorMessage(HttpServletRequest path, HttpStatus status, String error) {
+            this.path = path;
+            this.status = status;
+            this.error = error;
+        }
+    }
+
     private JwtUserDetailsService detailsService;
 
     private AuthenticationManager authenticationManager;
+
     @PostMapping("/auth")
     public ResponseEntity<?> autenticar (@RequestBody @Valid ClienteLoginDto dto, HttpServletRequest request) {
         log.info("Processo de autenticação pelo login {}", dto.getEmail());
@@ -39,6 +52,6 @@ public class AutenticacaoController {
         } catch (AuthenticationException exception) {
             log.warn("Bad Credentials from email '{}'", dto.getEmail());
         }
-        return HttpStatus.BAD_REQUEST;
+        return ResponseEntity.badRequest().body(new ErrorMessage(request, HttpStatus.BAD_REQUEST,"Credenciais Invalidas"));
     }
 }
