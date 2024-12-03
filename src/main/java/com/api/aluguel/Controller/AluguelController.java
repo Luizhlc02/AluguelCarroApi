@@ -1,11 +1,7 @@
 package com.api.aluguel.Controller;
 
 import com.api.aluguel.Repository.AluguelRepository;
-import com.api.aluguel.Repository.CarroRepository;
-import com.api.aluguel.Repository.ClienteRepository;
-import com.api.aluguel.Repository.ColaboradorRepository;
 import com.api.aluguel.dto.AluguelDto;
-import com.api.aluguel.dto.ClienteDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -24,7 +20,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "/api")
+@RequestMapping(value = "/aluguel")
 public class AluguelController {
 
     @Autowired
@@ -33,38 +29,12 @@ public class AluguelController {
     @Autowired
     private AluguelRepository aluguelRepository;
 
-    @Autowired
-    private CarroRepository carroRepository;
-
-    @Autowired
-    private ColaboradorRepository colaboradorRepository;
-
-    @Autowired
-    private ClienteRepository clienteRepository;
-
-    @PostMapping("/carro")
-    public ResponseEntity<Carro> create(@RequestBody Carro carro){
-    Carro NovoCarro = aluguelService.salvar(carro);
-    return ResponseEntity.status(HttpStatus.CREATED).body(NovoCarro);
-    }
-
-    @PostMapping("/cliente")
-    public ResponseEntity<Cliente> create(@RequestBody Cliente cliente){
-        Cliente NovoCliente = aluguelService.salvar(cliente);
-        return ResponseEntity.status(HttpStatus.CREATED).body(NovoCliente);
-    }
-
-    @PostMapping("/colaborador")
-    public ResponseEntity<Colaborador> create(@RequestBody Colaborador colaborador){
-        Colaborador NovoColaborador = aluguelService.salvar(colaborador);
-        return ResponseEntity.status(HttpStatus.CREATED).body(NovoColaborador);
-    }
-
-    @PostMapping("/aluguel")
+    @PostMapping
     public ResponseEntity<Aluguel> create(@RequestBody AluguelDto aluguelDto){
         Aluguel NovoAluguel = aluguelService.salvar(aluguelDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(NovoAluguel);
     }
+
     @GetMapping
     public Page<Aluguel> getAllProducts(
             @RequestParam(defaultValue = "0") int page,
@@ -77,41 +47,29 @@ public class AluguelController {
         Pageable pageable = PageRequest.of(page, size, sort);
         return aluguelService.findAll(pageable);
     }
-    @GetMapping("/aluguel")
-    public Object listaAlugueis(){
-    List<Aluguel> listaAluguel = aluguelRepository.findAll();
-    return listaAluguel;
+
+    @GetMapping("/{idAluguel}")
+    public Object aluguelFindById(@PathVariable Long idAluguel){
+        Optional<Aluguel> aluguel = aluguelService.aluguelFindbyID(idAluguel);
+        if (aluguel.isPresent()) {
+            return aluguel.get();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
-    @GetMapping("/carro")
-    public Object listaCarros(){
-        List<Carro> listaCarros = carroRepository.findAll();
-        return listaCarros;
-    }
-    @GetMapping("/cliente")
-    public Object listaClientes(){
-        List<Cliente> listaClientes = clienteRepository.findAll();
-        return listaClientes;
-    }
-
-    @GetMapping("/colaborador")
-    public Object listaColaboradores(){
-        List<Colaborador> listaColaboradores = colaboradorRepository.findAll();
-        return listaColaboradores;
-    }
-    @PutMapping("/cliente/{idCliente}")
-    public ResponseEntity<Cliente> alterarCadastroCliente(@PathVariable Long idCliente, @RequestBody ClienteDto clienteDto) {
-        ResponseEntity response = aluguelService.alterarCadastroCliente(clienteDto, idCliente);
-        return response;
-    }
-
-    @PutMapping("/aluguel/{idAluguel}")
-    public ResponseEntity<Aluguel> alterarCadastroAluguel(@PathVariable Long idAluguel, @RequestBody AluguelDto aluguelDto) {
+    @PutMapping("/{idAluguel}")
+     public ResponseEntity<Aluguel> alterarCadastroAluguel(@PathVariable Long idAluguel, @RequestBody AluguelDto aluguelDto) {
         ResponseEntity response = aluguelService.alterarCadastroAluguel(aluguelDto, idAluguel);
         return response;
     }
+    //@PutMapping("/{idAluguel}")
+    //public ResponseEntity<Aluguel> alterarStatusAluguel(@PathVariable Long idAluguel, @RequestBody AluguelDto alugueldto) {
+      //  ResponseEntity response = aluguelService.alterarStatusAluguel(alugueldto, idAluguel);
+        //return response;
+    //}
 
-    @DeleteMapping("/aluguel/{idAluguel}")
+    @DeleteMapping("/{idAluguel}")
     public void deleteById(@PathVariable Long idAluguel){
         aluguelService.deleteById(idAluguel) ;
     }

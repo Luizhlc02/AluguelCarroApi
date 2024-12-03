@@ -31,7 +31,7 @@ public class Aluguel {
     @ManyToOne
     @JoinColumn(name = "idColaborador", referencedColumnName = "idColaborador")
     public Colaborador colaborador;
-    
 
-    
+    @Column(name = "statusAluguel")
+    public Boolean statusAluguel;
 }

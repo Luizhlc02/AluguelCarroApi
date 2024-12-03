@@ -27,4 +27,13 @@ public class Cliente {
 
     @Column(name = "telefoneCliente")
     private String telefoneCliente;
+
+    @Column(name = "senhaCliente")
+    private String senhaCliente;
+    @Column(name = "role")
+    private Role role;
+
+    public enum Role{
+        ROlE_ADMIN, ROLE_CLIENTE
+    }
 }

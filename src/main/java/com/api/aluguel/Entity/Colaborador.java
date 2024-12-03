@@ -20,4 +20,13 @@ public class Colaborador {
     @Column(name = "cargoColaborador")
     private String cargoColaborador;
 
+    @Column(name = "senhaColaborador")
+    private String senhaColaborador;
+
+    @Column(name = "role")
+    private Cliente.Role role;
+
+    public enum Role{
+        ROlE_ADMIN, ROLE_CLIENTE
+    }
 }

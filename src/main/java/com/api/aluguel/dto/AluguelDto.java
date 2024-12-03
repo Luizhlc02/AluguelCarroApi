@@ -26,4 +26,7 @@ public class AluguelDto {
 
     @JsonProperty("idColaborador")
     private Long idColaborador;
+
+    @JsonProperty("statusAluguel")
+    private boolean statusAluguel;
 }

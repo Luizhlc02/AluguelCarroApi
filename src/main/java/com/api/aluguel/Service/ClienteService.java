@@ -3,6 +3,7 @@ package com.api.aluguel.Service;
 import com.api.aluguel.Entity.Cliente;
 import com.api.aluguel.Repository.ClienteRepository;
 import com.api.aluguel.dto.ClienteDto;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -42,5 +43,14 @@ public class ClienteService {
         cliente.setCpfCliente(clienteDto.getCpfCliente());
 
         return ResponseEntity.ok(clienteRepository.save(cliente));
+    }
+
+    public Cliente buscarPorCliente(String nomeCliente) {
+        return clienteRepository.findByCliente(nomeCliente).orElseThrow(
+                () -> new EntityNotFoundException(String.format("Cliente %s não encontrado", nomeCliente)));
+    }
+
+    public Cliente.Role buscarRolePorCliente(String nomeCliente) {
+        return clienteRepository.findByRoleCliente(nomeCliente);
     }
 }
