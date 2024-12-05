@@ -104,6 +104,7 @@ public class AluguelService {
     }
 
     public Optional<Aluguel>aluguelFindbyID(Long idAluguel) {
+
         return aluguelRepository.findById(idAluguel);
     }
 

@@ -4,6 +4,7 @@ import com.api.aluguel.Entity.Cliente;
 import com.api.aluguel.Repository.ClienteRepository;
 import com.api.aluguel.Service.ClienteService;
 import com.api.aluguel.dto.ClienteDto;
+import com.api.aluguel.dto.NovaSenhaDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -36,6 +37,11 @@ public class ClienteController {
         return listaClientes;
     }
 
+    @PatchMapping("/{idCliente}")
+    public ResponseEntity<Cliente> alterarSenha(@PathVariable Long idCliente, @RequestBody NovaSenhaDto dto) {
+        Cliente cliente = clienteService.esqueciMinhaSenha(idCliente, dto.getSenhaAtual(), dto.getNovaSenha(), dto.getConfirmaSenha());
+        return ResponseEntity.ok(cliente);
+    }
     @PutMapping("/{idCliente}")
     public ResponseEntity<Cliente> alterarCadastroCliente(@PathVariable Long idCliente, @RequestBody ClienteDto clienteDto) {
         ResponseEntity response = clienteService.alterarCadastroCliente(clienteDto, idCliente);

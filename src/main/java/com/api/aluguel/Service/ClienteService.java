@@ -24,6 +24,7 @@ public class ClienteService {
 
     @Transactional
     public Cliente salvar(Cliente clientes) {
+        clientes.setSenhaCliente(passwordEncoder.encode(clientes.getSenhaCliente()));
         return clienteRepository.save(clientes);
     }
 

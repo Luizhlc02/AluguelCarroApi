@@ -1,8 +1,10 @@
 package com.api.aluguel.Controller;
 
+import com.api.aluguel.Entity.Cliente;
 import com.api.aluguel.Entity.Colaborador;
 import com.api.aluguel.Repository.ColaboradorRepository;
 import com.api.aluguel.Service.ColaboradorService;
+import com.api.aluguel.dto.NovaSenhaDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,5 +34,11 @@ public class ColaboradorController {
     public Object listaColaboradores(){
         List<Colaborador> listaColaboradores = colaboradorRepository.findAll();
         return listaColaboradores;
+    }
+
+    @PatchMapping("/{idColaborador}")
+    public ResponseEntity<Colaborador> alterarSenha(@PathVariable Long idColaborador, @RequestBody NovaSenhaDto dto) {
+        Colaborador colaborador = colaboradorService.esqueciMinhaSenha(idColaborador, dto.getSenhaAtual(), dto.getNovaSenha(), dto.getConfirmaSenha());
+        return ResponseEntity.ok(colaborador);
     }
 }

@@ -1,3 +1,4 @@
+/*
 package com.api.aluguel.jwt;
 
 import jakarta.servlet.FilterChain;
@@ -13,14 +14,13 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Enumeration;
+
 
 @Slf4j
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
-    @Autowired
-    private JwtUserDetailsService detailsService;
 
+    private JwtUserDetailsService detailsService;
 
 
     private void toAuthentication(HttpServletRequest request, String emailCliente){
@@ -31,11 +31,13 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
     }
+
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-
-        final String token = request.getHeader(JwtUtils.JWT_AUTHORIZATION);
-
+        
+        String token = retrieveToken(request);
+        log.info("Token criado: {}", token);
         if(token == null || !token.startsWith(JwtUtils.JWT_BEARER)){
             log.info("JWT Token está nulo ou não foi iniciado");
             filterChain.doFilter(request, response);
@@ -55,5 +57,13 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request,response);
     }
 
+    private String retrieveToken(HttpServletRequest request) {
+        String token = request.getHeader("Authorization");
+        if(token == null || token.isEmpty() || !token.startsWith("Bearer ")) {
+            return null;
+        }
+        return token.substring(7, token.length());
+    }
 
 }
+*/

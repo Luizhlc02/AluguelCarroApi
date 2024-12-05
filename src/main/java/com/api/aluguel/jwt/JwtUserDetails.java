@@ -1,3 +1,5 @@
+/*
+
 package com.api.aluguel.jwt;
 
 import com.api.aluguel.Entity.Cliente;
@@ -21,3 +23,5 @@ public class JwtUserDetails extends User {
         return this.cliente.getRole().name();
     }
 }
+
+*/

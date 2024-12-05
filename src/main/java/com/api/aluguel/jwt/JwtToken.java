@@ -1,3 +1,4 @@
+
 package com.api.aluguel.jwt;
 
 import lombok.AllArgsConstructor;
@@ -10,3 +11,4 @@ import lombok.NoArgsConstructor;
 public class JwtToken {
     private String token;
 }
+

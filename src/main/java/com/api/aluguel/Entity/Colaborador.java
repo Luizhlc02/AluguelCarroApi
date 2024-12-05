@@ -24,7 +24,7 @@ public class Colaborador {
     private String senhaColaborador;
 
     @Column(name = "role")
-    private Cliente.Role role;
+    private Role role = Role.ROlE_ADMIN;
 
     public enum Role{
         ROlE_ADMIN, ROLE_CLIENTE

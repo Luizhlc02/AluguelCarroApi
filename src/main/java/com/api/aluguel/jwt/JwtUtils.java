@@ -1,15 +1,15 @@
+/*
+
 package com.api.aluguel.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
-import java.security.Key;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
@@ -42,7 +42,7 @@ public class JwtUtils {
         //data de criação do TOken
         Date issuedAt = new Date();
         Date limite = toExpireData(issuedAt);
-
+        try{
         String token = Jwts.builder()
                 .header().add("typ","JWT")
                 .and()
@@ -54,6 +54,9 @@ public class JwtUtils {
                 .claim("role",role)
                 .compact();
         return new JwtToken(token);
+        }catch (JwtException exception){
+            throw new JwtException("Erro ao gerar token", exception);
+        }
     }
 
     private static Claims getClaimsFromToken(String token){
@@ -61,8 +64,7 @@ public class JwtUtils {
             return Jwts.parser()
                     .verifyWith(generateKey()).build()
                     .parseSignedClaims(refactorToken(token)).getPayload();
-        }
-        catch (JwtException exception){
+        } catch (JwtException exception){
             log.error(String.format("Token invalido %s", exception.getMessage()));
         }
         return null;
@@ -94,3 +96,4 @@ public class JwtUtils {
     }
 
 }
+*/
